@@ -19,7 +19,7 @@ class UpdateApplicationForm(FlaskForm):
     submit = SubmitField("Update")
 
 def paginate_query(query, page):
-    return query.paginate(page=page, per_page=20, error_out=False)
+    return query.paginate(page=page, per_page=10, error_out=False)
 
 def app_init_app(app: Flask):
     @app.route("/user/app")
@@ -29,19 +29,16 @@ def app_init_app(app: Flask):
         page = request.args.get("page", 1, type=int)
         query = request.args.get("query", "")
 
-        apps_query = (
-            db.session.query(Application)
-                .join(ApplicationRedeemToken, Application.id == ApplicationRedeemToken.application_id)
-                .filter(ApplicationRedeemToken.user_id == current_user.id)
-                .distinct()
-        )
+        apps_query = db.session.query(ApplicationRedeemToken).filter(ApplicationRedeemToken.user_id == current_user.id)
 
         if query:
             apps_query = apps_query.filter(Application.name.ilike(f"%{query}%"))
 
+        print(apps_query)
+
         applications = paginate_query(apps_query, page)
 
-        return render_template("app.list.html", navbar_focus="user_app", navbars=navbars, applications=applications, title="Authorized", is_owner=False)
+        return render_template("app.list.html", navbar_focus="user_app", navbars=navbars, applications=applications, title="Authorized", is_auth_history=True, is_owner=False)
 
     @app.route("/app/new", methods=["GET", "POST"])
     @login_required
@@ -72,7 +69,7 @@ def app_init_app(app: Flask):
 
         applications = paginate_query(apps_query, page)
 
-        return render_template("app.list.html", navbar_focus="app_owner", navbars=navbars, applications=applications, title="Owned", is_owner=True)
+        return render_template("app.list.html", navbar_focus="app_owner", navbars=navbars, applications=applications, title="Owned", is_auth_history=False, is_owner=True)
 
     @app.route("/app/<int:app_id>")
     @login_required
@@ -133,7 +130,7 @@ def app_init_app(app: Flask):
 
         applications = paginate_query(apps_query, page)
 
-        return render_template("app.list.html", navbar_focus="admin_app", navbars=navbars_admin, applications=applications, title="All", is_owner=False, is_admin=True)
+        return render_template("app.list.html", navbar_focus="admin_app", navbars=navbars_admin, applications=applications, title="All", is_auth_history=False, is_owner=False, is_admin=True)
 
     @app.route("/admin/app/<int:app_id>/setting", methods=["GET", "POST"])
     @login_required

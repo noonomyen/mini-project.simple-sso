@@ -40,7 +40,7 @@ class ApplicationRedeemToken(Base):
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     token = Column(String(64), nullable=False)
     used = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.now)
+    auth_at = Column(DateTime, default=datetime.now)
 
     user = relationship("User", back_populates="application_redeem_tokens")
     application = relationship("Application", back_populates="application_redeem_tokens")

@@ -1,4 +1,5 @@
-import secrets
+from secrets import token_urlsafe
+from datetime import datetime
 from flask import Flask, render_template, abort, redirect, request
 from flask_login import login_required, current_user
 from .db_schema import Application, ApplicationRedeemToken, User
@@ -21,7 +22,7 @@ def sso_init_app(app: Flask):
         if not app_:
             return abort(404)
 
-        token = secrets.token_urlsafe(32)
+        token = token_urlsafe(32)
         redeem_token = ApplicationRedeemToken(
             application_id=app_id,
             user_id=current_user.id,
@@ -53,7 +54,7 @@ def sso_init_app(app: Flask):
             ApplicationRedeemToken.application_id == app_id
         ).one_or_none()
 
-        if token is None or token.used: # type: ignore
+        if token is None or token.used or (datetime.now() - token.auth_at).total_seconds() > 60: # type: ignore
             return {"status": "fail"}
 
         token.used = True # type: ignore

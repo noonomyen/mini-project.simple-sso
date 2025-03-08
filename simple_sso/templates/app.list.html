@@ -23,31 +23,46 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>App ID</th>
                         <th>Name</th>
                         <th>Owner</th>
-                        <th>Created At</th>
+                        {% if is_auth_history %}
+                            <th>Auth Date</th>
+                        {% else %}
+                            <th>Created At</th>
+                        {% endif %}
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for app in applications.items %}
-                    <tr>
-                        <td>{{ app.id }}</td>
-                        <td>{{ app.name }}</td>
-                        <td>{{ app.owner.username }}</td>
-                        <td>{{ app.created_at.strftime('%Y-%m-%d') }}</td>
-                        <td>
-                            <a href="{{ url_for('app_info', app_id=app.id) }}" class="btn btn-sm btn-info">View</a>
-                            {% if is_owner %}
-                                <a href="{{ url_for('app_setting', app_id=app.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                <a href="{{ url_for('app_delete', app_id=app.id) }}" class="btn btn-sm btn-danger">Delete</a>
-                            {% elif is_admin %}
-                                <a href="{{ url_for('admin_app_setting', app_id=app.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                <a href="{{ url_for('admin_app_delete', app_id=app.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                        {% if is_auth_history %}
+                            {% set app_id = app.application.id %}
+                        {% else %}
+                            {% set app_id = app.id %}
+                        {% endif %}
+                        <tr>
+                            <td>{{ app_id }}</td>
+                            {% if is_auth_history %}
+                                <td>{{ app.application.name }}</td>
+                                <td>{{ app.application.owner.full_name }} ({{ app.application.owner.username }})</td>
+                                <td>{{ app.auth_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            {% else %}
+                                <td>{{ app.name }}</td>
+                                <td>{{ app.owner.full_name }} ({{ app.owner.username }})</td>
+                                <td>{{ app.created_at.strftime('%Y-%m-%d') }}</td>
                             {% endif %}
-                        </td>
-                    </tr>
+                            <td>
+                                <a href="{{ url_for('app_info', app_id=app_id) }}" class="btn btn-sm btn-info">View</a>
+                                {% if is_owner %}
+                                    <a href="{{ url_for('app_setting', app_id=app_id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="{{ url_for('app_delete', app_id=app_id) }}" class="btn btn-sm btn-danger">Delete</a>
+                                {% elif is_admin %}
+                                    <a href="{{ url_for('admin_app_setting', app_id=app_id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="{{ url_for('admin_app_delete', app_id=app_id) }}" class="btn btn-sm btn-danger">Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

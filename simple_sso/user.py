@@ -72,7 +72,7 @@ def user_init_app(app: Flask):
                 User.email.ilike(f"%{query}%")
             )
 
-        users = users_query.paginate(page=page, per_page=20, error_out=False) # type: ignore
+        users = users_query.paginate(page=page, per_page=10, error_out=False) # type: ignore
 
         return render_template(
             "user.list.html", admin=True, navbar_focus="admin_user",
