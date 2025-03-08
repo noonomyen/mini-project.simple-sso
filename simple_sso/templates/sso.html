@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Authorize Application
+{% endblock %}
+
+{% block content %}
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xl-6 col-lg-7 col-md-9 col-sm-11">
+                <div class="card shadow-lg mt-5">
+                    <div class="card-body p-5">
+                        <h1 class="fs-4 card-title fw-bold mb-4">Authorize Application</h1>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Application Name:</label>
+                            <p class="form-control-plaintext">{{ app.name }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Owner:</label>
+                            <p class="form-control-plaintext">{{ app.owner.full_name }} ({{ app.owner.username }})</p>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Your Account:</label>
+                            <p class="form-control-plaintext">{{ current_user.full_name }} ({{ current_user.username }})</p>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ url_for('sso_authorize', app_id=app.id) }}" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i>
+                                Allow
+                            </a>
+                            <a href="{{ url_for('sso_authorize_deny', app_id=app.id) }}" class="btn btn-danger ms-2">
+                                <i class="bi bi-x-circle"></i>
+                                Deny
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

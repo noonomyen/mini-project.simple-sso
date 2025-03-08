@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    New Application
+{% endblock %}
+
+{% block content %}
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-lg mt-5">
+                    <div class="card-body p-5">
+                        <h1 class="fs-4 card-title fw-bold mb-4">Create New Application</h1>
+                        <form method="POST" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted">{{ form.name.label }}</label>
+                                {{ form.name(class="form-control") }}
+                                {% for error in form.name.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted">{{ form.url.label }}</label>
+                                {{ form.url(class="form-control", placeholder="https://example.com/callback") }}
+                                {% for error in form.url.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-success" role="alert">
+                                            <span>{{ message }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+
+                            <div class="d-flex justify-content-end">
+                                {{ form.submit(class="btn btn-primary ms-auto") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    User
+{% endblock %}
+
+{% block content %}
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xl-6 col-lg-7 col-md-9 col-sm-11">
+                <div class="card shadow-lg mt-5">
+                    <div class="card-body p-5">
+                        <h1 class="fs-4 card-title fw-bold mb-4">Profile</h1>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Username:</label>
+                            <p class="form-control-plaintext">
+                                {{ user.username }}{% if user.is_admin %} (admin){% endif %}
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Email:</label>
+                            <p class="form-control-plaintext">{{ user.email }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Full Name:</label>
+                            <p class="form-control-plaintext">{{ user.full_name }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted">Joined Date:</label>
+                            <p class="form-control-plaintext">{{ user.registered_at }}</p>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            {% if admin %}
+                            <a href="{{ url_for('admin_user_setting', user_id=user.id) }}" class="btn btn-primary">
+                                <i class="bi bi-pencil-square"></i>
+                                Update
+                            </a>
+                            <a href="{{ url_for('admin_user_del', user_id=user.id) }}" class="btn btn-danger ms-2">
+                                <i class="bi bi-x-square"></i>
+                                Delete
+                            </a>
+                            {% else %}
+                                <a href="{{ url_for('user_setting') }}" class="btn btn-primary">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Update
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

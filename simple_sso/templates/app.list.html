@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ title }} Applications
+{% endblock %}
+
+{% block content %}
+<section class="h-100">
+    <div class="container h-100">
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h1 class="fs-4 fw-bold">{{ title }} Applications</h1>
+            <form class="d-flex" method="GET">
+                <input type="text" name="query" class="form-control me-2" placeholder="Search applications..." value="{{ query }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+                <a href="{{ url_for(request.endpoint) }}" class="btn btn-outline-secondary ms-2">Clear</a>
+                {% if is_owner %}
+                    <a href="{{ url_for('app_new') }}" class="btn btn-outline-success ms-2">New</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Owner</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications.items %}
+                    <tr>
+                        <td>{{ app.id }}</td>
+                        <td>{{ app.name }}</td>
+                        <td>{{ app.owner.username }}</td>
+                        <td>{{ app.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('app_info', app_id=app.id) }}" class="btn btn-sm btn-info">View</a>
+                            {% if is_owner %}
+                                <a href="{{ url_for('app_setting', app_id=app.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ url_for('app_delete', app_id=app.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            {% elif is_admin %}
+                                <a href="{{ url_for('admin_app_setting', app_id=app.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ url_for('admin_app_delete', app_id=app.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if applications.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for(request.endpoint, page=applications.prev_num, query=query) }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                {% for page_num in applications.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == applications.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for(request.endpoint, page=page_num, query=query) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if applications.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for(request.endpoint, page=applications.next_num, query=query) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</section>
+{% endblock %}
