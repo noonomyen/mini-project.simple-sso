@@ -44,3 +44,23 @@ You can add admin rights directly in the database.
 ```sql
 UPDATE user SET is_admin = TRUE WHERE username = 'your username'
 ```
+
+## Usage
+
+`/sso/<application id>` is used to request user access permissions. Once approved, the system will redirect to the application's URL with a token parameter.
+
+After receiving the token, the application must use it to request user information from the API at `/sso/<application id>/redeem?token=<token>`
+
+Example JSON response:
+
+```json
+{
+  "status": "success",
+  "user": {
+    "email": "example@example.com",
+    "full_name": "Example",
+    "id": 7,
+    "username": "example"
+  }
+}
+```
